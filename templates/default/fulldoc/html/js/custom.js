@@ -1,9 +1,3 @@
-function routeSearchFrameLinks() {
-    $('#route_list_link').click(function() {
-        toggleSearchFrame(this, relpath + 'route_list.html');
-    });
-}
-
 function routeKeyboardShortcuts() {
   if (window.top.frames.main) return;
   $(document).keypress(function(evt) {
@@ -17,5 +11,4 @@ function routeKeyboardShortcuts() {
   });
 }
 
-$(routeSearchFrameLinks);
 $(routeKeyboardShortcuts);
