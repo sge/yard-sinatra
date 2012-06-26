@@ -2,11 +2,11 @@
 <ul class="<%= @name %>">
   <% object.tags(@name).each do |tag| %>
     <li>
-      <% unless @no_types %>
-        <span class='type'><%= format_types(tag.types) %></span>
-      <% end %>
       <% unless @no_names %>
         <span class='name'><%= h tag.name %></span>
+      <% end %>
+      <% unless @no_types %>
+        <span class='type'><%= format_types(tag.types) %></span>
       <% end %>
       <% if tag.text && !tag.text.empty? %>
         <% unless (@no_types || tag.types.nil? || tag.types.empty?) && @no_names %>&mdash;<% end %>
