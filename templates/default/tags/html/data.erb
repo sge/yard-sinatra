@@ -1,7 +1,7 @@
  <% object.tags(:response_field).each do |param| %>
     <% tags = object.tags(:data).select {|x| x.name.to_s == param.name.to_s } %>
     <% next if tags.empty? %>
-    <p class="tag_title">Data Hash (<tt><%= param.name %></tt>):</p>
+    <p class="tag_title">Response Data Hash (<tt><%= param.name %></tt>):</p>
     <ul class="option">
       <% for tag in tags %>
         <li>

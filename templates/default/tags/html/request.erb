@@ -1,8 +1,8 @@
 <% if object.has_tag?(:request) %>
   <div class="examples">
-    <p class="tag_title">Request:</p>
+    <p class="tag_title">Example Requests:</p>
     <% object.tags(:request).each do |tag| %>
-      <p><%= htmlify_line(tag.name) %></p>
+      <%= htmlify_line(tag.name) %>
       <pre class="example code source_code"><%= html_syntax_highlight(tag.text, :plain) %></pre>
     <% end %>
   </div>
