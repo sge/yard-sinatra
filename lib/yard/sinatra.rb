@@ -50,6 +50,17 @@ module YARD
             o.add_file(parser.file, statement.line)
           end
 
+          if route.has_tag?(:data)
+            # create the options parameter if its missing
+            route.tags(:data).each do |data|
+              expected_param = data.name
+              unless route.tags(:response_field).find {|x| x.name == expected_param }
+                new_tag = YARD::Tags::Tag.new(:response_field, "a customizable response", "Hash", expected_param)
+                route.docstring.add_tag(new_tag)
+              end
+            end
+          end
+
           AbstractRouteHandler.routes << route
           route
         end
@@ -87,6 +98,7 @@ module YARD
         def process
           http_verb = statement.method_name(true).to_s.upcase
           http_path = statement.parameters.first.jump(:tstring_content, :ident).source
+
 
           object = case http_verb
           when 'NOT_FOUND'

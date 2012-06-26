@@ -8,3 +8,5 @@ YARD::Tags::Library.define_tag("Headers", :header, :with_name)
 YARD::Tags::Library.define_tag("Response codes", :response_code, :with_name)
 YARD::Tags::Library.define_tag("Image", :image)
 YARD::Tags::Library.define_tag("Overall", :overall)
+
+YARD::Tags::Library.define_tag("Data Hash", :data,:with_options)
