@@ -1,7 +1,6 @@
 require "yard"
 
 module YARD
-
   module Sinatra
     def self.routes
       YARD::Handlers::Sinatra::AbstractRouteHandler.routes
@@ -16,15 +15,8 @@ module YARD
     class RouteObject < MethodObject
       attr_accessor :http_verb, :http_path, :real_name
 
-      def name(prefix = false)
-        return super unless show_real_name?
-        prefix ? (sep == ISEP ? "#{sep}#{real_name}" : real_name.to_s) : real_name.to_sym
-      end
-
-      # @see YARD::Handlers::Sinatra::AbstractRouteHandler#register_route
-      # @see #name
-      def show_real_name?
-        real_name and caller[1] =~ /`signature'/
+      def name(prefix=false)
+        super(false)
       end
 
       def type 
@@ -34,11 +26,9 @@ module YARD
   end
 
   module Handlers
-
     # Displays Sinatra routes in YARD documentation.
     # Can also be used to parse routes from files without executing those files.
     module Sinatra
-
       # Logic both handlers have in common.
       module AbstractRouteHandler
         def self.routes
@@ -49,51 +39,50 @@ module YARD
           @error_handlers ||= []
         end
 
-        def process
-          case http_verb
-          when 'NOT_FOUND'
-            register_error_handler(http_verb)
-          else
-            path = http_path
-            path = $1 if path =~ /^"(.*)"$/
-            register_route(http_verb, path)
-          end
-        end
-
-        def register_route(verb, path, doc = nil)
-          # HACK: Removing some illegal letters.
-          method_name = "" << verb << "_" << path.gsub(/[^\w_]/, "_")
-          real_name   = "" << verb << " " << path
+        def register_route(verb, path, doc=nil)
+          method_name = "#{verb}\t#{path.gsub(/\s/, "\t")}"
+          real_name   = "#{verb} #{path}"
           route = register CodeObjects::RouteObject.new(namespace, method_name, :instance) do |o|
-            o.visibility = "public"
+            o.visibility = :public
             o.source     = statement.source
             o.signature  = real_name
             o.explicit   = true
             o.scope      = scope
-            o.docstring  = statement.comments
             o.http_verb  = verb
             o.http_path  = path
             o.real_name  = real_name
             o.add_file(parser.file, statement.line)
           end
+
+          if route.has_tag?(:data)
+            # create the options parameter if its missing
+            route.tags(:data).each do |data|
+              expected_param = data.name
+              unless route.tags(:response_field).find {|x| x.name == expected_param }
+                new_tag = YARD::Tags::Tag.new(:response_field, "a customizable response", "Hash", expected_param)
+                route.docstring.add_tag(new_tag)
+              end
+            end
+          end
+
           AbstractRouteHandler.routes << route
-          yield(route) if block_given?
+          route
         end
 
-        def register_error_handler(verb, doc = nil)
+        def register_error_handler(verb, doc=nil)
           error_handler = register CodeObjects::RouteObject.new(namespace, verb, :instance) do |o|
-            o.visibility = "public"
+            o.visibility = :public
             o.source     = statement.source
             o.signature  = verb
             o.explicit   = true
             o.scope      = scope
-            o.docstring  = statement.comments
             o.http_verb  = verb
             o.real_name  = verb
             o.add_file(parser.file, statement.line)
           end
+
           AbstractRouteHandler.error_handlers << error_handler
-          yield(error_handler) if block_given?
+          error_handler
         end
       end
 
@@ -108,32 +97,25 @@ module YARD
         handles method_call(:delete)
         handles method_call(:head)
         handles method_call(:not_found)
+        namespace_only
 
-        def http_verb
-          statement.method_name(true).to_s.upcase
-        end
+        def process
+          http_verb = statement.method_name(true).to_s.upcase
+          http_path = statement.parameters.first.jump(:tstring_content, :ident).source
 
-        def http_path
-          statement.parameters.first.source
-        end
-      end
 
-      # Route handler for YARD's legacy parser.
-      module Legacy
-        class RouteHandler < Ruby::Legacy::Base
-          include AbstractRouteHandler
-          handles /\A(get|post|put|patch|delete|head|not_found)[\s\(].*/m
-
-          def http_verb
-            statement.tokens.first.text.upcase
+          object = case http_verb
+          when 'NOT_FOUND'
+            register_error_handler(http_verb)
+          else
+            path = http_path
+            path = $1 if path =~ /^"(.*)"$/
+            register_route(http_verb, path)
           end
 
-          def http_path
-            statement.tokens[2].text
-          end
+          parse_block(statement.last.last, :owner => object)
         end
       end
-
     end
   end
 end
