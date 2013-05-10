@@ -6,9 +6,9 @@ This plugin adds [Sinatra](http://sinatrarb.com) routes to [YARD](http://yardoc.
 Usage
 -----
 
-Install via rubygems:
-
-    gem install yard-sinatra
+Add to your Gemfile:
+    
+    gem 'yard-sinatra', github: 'sge/yard-sinatra'
 
 Add comments to your routes (well, that's optional):
 
