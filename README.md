@@ -47,6 +47,10 @@ Or, to generate spiffy [Swagger](http://github.com/wordnik/swagger-core) documen
 
     yardoc -t swagger
 
+By default, the Swagger documentation will include references to `http://127.0.0.1:9292/` as the base URL for making interactive API calls. You can modify this behavior by setting the `SWAGGER_BASE_PATH` environment variable, for example:
+
+    SWAGGER_BASE_PATH='http://api.domain.com/' yardoc -t swagger
+
 Old versions of YARD (before 0.6.2) will automatically detect the yard-sinatra plugin and load it. In newer versions you must use the `--plugin yard-sinatra` parameter, or add it to a .yardopts file.
 
 Other use cases
