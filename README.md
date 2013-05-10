@@ -1,7 +1,7 @@
 YARD::Sinatra
 =============
 
-This plugin adds [Sinatra](http://sinatrarb.com) routes to [YARD](http://yardoc.org/) output.
+This plugin adds [Sinatra](http://sinatrarb.com) routes to [YARD](http://yardoc.org/) output. Additionally, there is a [Swagger](http://github.com/wordnik/swagger-core) template for generating interactive API documentation.
 
 Usage
 -----
@@ -42,6 +42,10 @@ Add comments to your routes (well, that's optional):
 The you're ready to go:
 
     yardoc example_app.rb
+
+Or, to generate spiffy [Swagger](http://github.com/wordnik/swagger-core) documentation, use:
+
+    yardoc -t swagger
 
 Old versions of YARD (before 0.6.2) will automatically detect the yard-sinatra plugin and load it. In newer versions you must use the `--plugin yard-sinatra` parameter, or add it to a .yardopts file.
 
