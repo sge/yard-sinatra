@@ -57,6 +57,8 @@ Additionally, you can pass a `CODE_ENV` environment variable with a pointer to a
 
 Old versions of YARD (before 0.6.2) will automatically detect the yard-sinatra plugin and load it. In newer versions you must use the `--plugin yard-sinatra` parameter, or add it to a .yardopts file.
 
+**Note**: you'll need a *real* webserver serving the documentation.
+
 Other use cases
 ---------------
 
