@@ -46,16 +46,33 @@ def swagger_api_definition
     resources[resource][route.http_path] << route
   end
 
-  # build the models section by inspecting the actual ActiveRecord models themselves
-  # this is slightly error-prone in that our "resource" names may not match one-to-one
-  # with models
+  # for dynamic model inclusion, check and see if there was an environment file passed to us
+  # and if so, check to see if we can make any assumptions about models based on ActiveRecord::Base
+  # objects in the namespace
+  #
+  # eventually this will go away in favor of more explicit @tags on the models themselves
+  #
+  if ENV['CODE_ENV'].present?
+    require ENV['CODE_ENV']
 
-  resources.keys.each do |resource|
-    klass = "SleepyGiant::Model::Subscriptions::#{resource.singularize.classify}".constantize rescue next
-    swagger_definition[:models][resource.singularize.classify] = {
-              id: resource.singularize.classify,
-      properties: klass.columns.inject({}) { |m,i| m[i.name] = { type: i.type }; m }
-    }
+    # look for classes (models) which YARD knows about that match the resource name
+    active_record_models = options.objects.select { |o| o.is_a?(YARD::CodeObjects::ClassObject) && o.superclass.to_s == 'ActiveRecord::Base' }
+
+    # build the models section by inspecting the actual ActiveRecord models themselves
+    # this is slightly error-prone in that our "resource" names may not match one-to-one
+    # with models
+
+    resources.keys.each do |resource|
+      klass = active_record_models.select { |object| object.to_s.split('::').last == resource.singularize.classify }.first
+      if klass
+        klass = klass.to_s.constantize rescue next
+        swagger_definition[:models][resource.singularize.classify] = {
+                  id: resource.singularize.classify,
+          properties: klass.columns.inject({}) { |m,i| m[i.name] = { type: i.type }; m }
+        }
+      end
+    end
+
   end
 
   # for each resource and path combination, assemble the API definitions

@@ -51,6 +51,10 @@ By default, the Swagger documentation will include references to `http://127.0.0
 
     SWAGGER_BASE_PATH='http://api.domain.com/' yardoc -t swagger
 
+Additionally, you can pass a `CODE_ENV` environment variable with a pointer to a Ruby file which loads your code's environment (classes, models, etc.) YARD will look for `ActiveRecord::Base` objects that correlate with resource API endpoints in order to automatically generate the schema for them. For example:
+
+    CODE_ENV='./lib/environment' yardoc -t swagger
+
 Old versions of YARD (before 0.6.2) will automatically detect the yard-sinatra plugin and load it. In newer versions you must use the `--plugin yard-sinatra` parameter, or add it to a .yardopts file.
 
 Other use cases
