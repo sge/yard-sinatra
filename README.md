@@ -43,6 +43,12 @@ The you're ready to go:
 
 Old versions of YARD (before 0.6.2) will automatically detect the yard-sinatra plugin and load it. In newer versions you must use the `--plugin yard-sinatra` parameter, or add it to a .yardopts file.
 
+## Markdown Format
+
+To generate Markdown-formatted API documentation:
+
+    yardoc -t api -f markdown
+
 ## Swagger
 
 To generate spiffy [Swagger](http://github.com/wordnik/swagger-core) documentation, use:
