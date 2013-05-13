@@ -1,0 +1,22 @@
+<%
+
+  base_path = ENV['API_BASE_PATH'].present? ? ENV['API_BASE_PATH'] : 'http://127.0.0.1:9292/'
+
+  resources = {}
+  YARD::Sinatra.routes.each do |route|
+    resource                             = route.http_path.split('/')[1]
+    resources[resource]                  = {} unless resources[resource].present?
+    resources[resource][route.http_path] = [] unless resources[resource][route.http_path].present?
+    resources[resource][route.http_path] << route
+  end
+
+%>
+<% resources.keys.each do |resource| %>
+## <%= resource.to_s.pluralize.titleize %>
+<% resources[resource].keys.each do |path| %>
+<% resources[resource][path].each do |route| %>
+### <%= route.http_verb %> <%= route.http_path %>
+<%= route.docstring %>
+<% end %>
+<% end %>
+<% end %>
