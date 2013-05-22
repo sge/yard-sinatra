@@ -14,7 +14,7 @@
           <br />
           <div class="field text field-doc-resource-url">
             <h2>Resource URL</h2>
-            <div class="odd">https://api.twitter.com<%= @route.http_path %></div>
+            <div class="odd"><%= @api_url %><%= @route.http_path %></div>
           </div>
           <div class="field text field-doc-params">
             <h2>Parameters</h2>
@@ -48,12 +48,12 @@
                 <div class="odd">
                   <% response_object = controller_or_route_tag( @route, :api_response_object ) %>
                   <% if response_object.present? %>
-                    <% puts "~~~>> #{response_object.text}" %>
+                    <%# puts "~~~>> #{response_object.text}" %>
                     <% obj = object_at(response_object.text) %>
-                    <% puts "~~~~~~~>> #{obj.inspect}" %>
+                    <%# puts "~~~~~~~>> #{obj.inspect}" %>
                     <% if obj.present? && obj.tags(:response_attr).present? %>
                       <% json_attributes = obj.tags(:response_attr).map(&:name) %>
-                      <% puts "~~~~>> #{json_attributes.inspect}" %>
+                      <% #puts "~~~~>> #{json_attributes.inspect}" %>
                       <%= json_attributes.to_json %>
                     <% end %>
                   <% end %>

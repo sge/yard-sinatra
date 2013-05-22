@@ -1,22 +1,26 @@
-<%
+# <%= @api_name %> Documentation
 
-  base_path = ENV['API_BASE_PATH'].present? ? ENV['API_BASE_PATH'] : 'http://127.0.0.1:9292/'
-
-  resources = {}
-  YARD::Sinatra.routes.each do |route|
-    resource                             = route.http_path.split('/')[1]
-    resources[resource]                  = {} unless resources[resource].present?
-    resources[resource][route.http_path] = [] unless resources[resource][route.http_path].present?
-    resources[resource][route.http_path] << route
-  end
-
-%>
-<% resources.keys.each do |resource| %>
+<% resources.each do |resource| %>
 ## <%= resource.to_s.pluralize.titleize %>
-<% resources[resource].keys.each do |path| %>
-<% resources[resource][path].each do |route| %>
+<%= resource_description resource %>
+<% routes_for_resource(resource).each do |route| %>
 ### <%= route.http_verb %> <%= route.http_path %>
+<% if route.docstring.blank? %>
+_Endpoint documentation missing._
+<% else %>
 <%= route.docstring %>
 <% end %>
+
+*Resource URL:* <%= @api_url %><%= route.http_path %>
+
+<% if route.tags(:param).size > 0 %>
+##### Request Parameters
+
+Name | Type | Description
+--- | --- | ---
+<% route.tags(:param).each do |param| %>*<%= param.name %>* | <%= param.type %> | <%= param.text %>
+<% end %>
+<% end %>
+
 <% end %>
 <% end %>

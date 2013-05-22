@@ -24,7 +24,7 @@ def path_parameters(path)
 end
 
 def swagger_api_definition
-  base_path = ENV['SWAGGER_BASE_PATH'].present? ? ENV['SWAGGER_BASE_PATH'] : 'http://127.0.0.1:9292/'
+  base_path = ENV['API_URL'].present? ? ENV['API_URL'] : 'http://127.0.0.1:9292/'
 
   swagger_definition = {
         apiVersion: '1.0',
