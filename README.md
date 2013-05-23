@@ -55,9 +55,9 @@ To generate spiffy [Swagger](http://github.com/wordnik/swagger-core) documentati
 
     yardoc -t swagger
 
-By default, the Swagger documentation will include references to `http://127.0.0.1:9292/` as the base URL for making interactive API calls. You can modify this behavior by setting the `SWAGGER_BASE_PATH` environment variable, for example:
+By default, the Swagger documentation will include references to `http://127.0.0.1:9292/` as the base URL for making interactive API calls. You can modify this behavior by setting the `API_URL` environment variable, for example:
 
-    SWAGGER_BASE_PATH='http://api.domain.com/' yardoc -t swagger
+    API_URL='http://api.domain.com/' yardoc -t swagger
 
 Additionally, you can pass a `CODE_ENV` environment variable with a pointer to a Ruby file which loads your code's environment (classes, models, etc.) YARD will look for `ActiveRecord::Base` objects that correlate with resource API endpoints in order to automatically generate the schema for them. For example:
 
