@@ -1,7 +1,10 @@
+$:.push File.expand_path("../lib", __FILE__)
+require File.join(File.dirname(__FILE__), 'lib', 'yard', 'yard-sinatra', 'version.rb')
+
 Gem::Specification.new do |s|
   # Get the facts.
   s.name             = "yard-sinatra"
-  s.version          = "2.0.0.beta"
+  s.version          = "#{YARD::Sinatra::VERSION}.sge"
   s.description      = "Generate documentation for your Sinatra-based API like a boss!"
 
   # External dependencies
