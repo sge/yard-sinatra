@@ -63,6 +63,10 @@ def routes_for_controller(obj)
   YARD::Sinatra.routes.select { |r| r.namespace.to_s == "#{obj.namespace}::#{obj.name}" }
 end
 
+def mounted_resources_for(resource)
+  YARD::CrudMounter.mounted_resources.select { |mr| mr.resource == resource }.sort_by(&:height)
+end
+
 def resources
   resources = []
   controllers_with_defined_resources.each do |c|

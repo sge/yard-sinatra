@@ -1,8 +1,42 @@
 # <%= @api_name %> Documentation
 
+
 <% resources.each do |resource| %>
 ## <%= resource.to_s.pluralize.titleize %>
 <%= resource_description resource %>
+
+---- AUTO CRUD GENERATED -----
+
+<% mounted_resources_for(resource).each do |mr| %>
+  <% mr.crud_actions.each do |action| %>
+    <% route = mr.routes[action.to_sym] %>
+
+### <%= route.http_method %> <%= route.path %>
+
+<%= mr.description_for(action) %>
+
+Sample curl:
+  <pre><code>curl http://<%= @api_url %>/<%= mr.curl_path(action) %></code></pre>
+
+Sample response:
+  <pre><code><%= mr.sample_response %></pre></code>
+
+*Resource URL:* http://<%= @api_url %><%= mr.resource_path(action) %>
+
+##### Request Parameters
+
+<% unless mr.params_for(action).empty? %>
+Name | Type | Description
+--- | --- | ---<% end %>
+<% mr.params_for(action).each do |param| %>*<%= param.name %>* | <%= param.type %> | <%= param.text %>
+<% end %>
+
+
+  <% end %>
+<% end %>
+
+---- END CRUD GENERATED -----
+
 <% routes_for_resource(resource).each do |route| %>
 ### <%= route.http_verb %> <%= route.http_path %>
 <% if route.docstring.blank? %>
